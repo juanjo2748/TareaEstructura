@@ -1,9 +1,12 @@
 package co.edu.unbosque.util.cliente;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
@@ -43,6 +46,27 @@ public class Cliente extends Thread {
 	        	 // establish a connection 
 	        	try
 	            { 
+	                BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in));
+	                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+	                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+	                String serverMessage = in.readLine();
+	                System.out.println("Servidor: " + serverMessage);
+
+	                while (true) {
+	                    String userInput = consoleReader.readLine();
+	                    out.println(userInput);
+
+	                    if (userInput.equalsIgnoreCase("salir")) {
+	                        break;
+	                    }
+
+	                    String response = in.readLine();
+	                    System.out.println(response);
+	                }
+	                    String response = in.readLine();
+	                    System.out.println(response);
+	                
 	        		this.socket = new Socket(this.address, this.port); 
 	                System.out.println("Connected"); 
 	            
@@ -50,6 +74,7 @@ public class Cliente extends Thread {
 	                this.out = new DataOutputStream(socket.getOutputStream()); 
 	        		
 	        		//line = this.input.readLine(); 
+	         
 	                line=sn.next();
 	                this.out.writeUTF(line);
 	                //close socket and output stream
@@ -62,7 +87,7 @@ public class Cliente extends Thread {
 	    	        // takes input from the client socket 
 	    	        this.in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
 	                //Print in server the client message
-	                System.out.println(in.readUTF());
+	                System.out.println(in.read());
 	                this.in.close();
 	                this.server.close();
 	            } 
@@ -86,7 +111,7 @@ public class Cliente extends Thread {
 	    
 	    public static void main(String args[]) 
 	    { 
-	    	//Servidor server = new Servidor(5001); 
+	    	//Servidor server = new Servidor(8000); 
 	    	Cliente client = new Cliente("127.0.0.1", 8000); 
 	    	client.start();
 	    	
